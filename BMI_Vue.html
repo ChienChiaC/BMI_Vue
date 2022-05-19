@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI-Vue</title>
+    <link rel="stylesheet" href="./css/BMI_Vue.css">
+</head>
+
+<body>
+
+    <div id="app" class="container">
+
+        <!-- 標題 -->
+        <header>
+            <h1>BMI 計算機</h1>
+            <!-- <h3>身體質量指數 (Body Mass Index，簡稱BMI)是公認用來估計肥胖程度的方法</h3> -->
+            <h3>BMI = 體重(公斤)/身高的平方(公尺)</h3>
+
+            <hr style="background-color:rgb(41, 51, 56);width: 80%; height:5px; border:none;margin-bottom: 28px;max-width: 700px;">
+
+            <div class="inner-div form">
+                <div>
+                    
+                    <label for="male">男性</label>
+                    <input id="male" type="radio" value="0" v-model="gender">
+
+                    <label for="female" style="margin-left:10px;">女性</label>
+                    <input id="female" type="radio" value="1" v-model="gender">
+
+                    <span class="genderline" style="margin-left:8px; margin-right:8px;"> | </span>
+
+                    <br class="cross">
+
+                    <label for="myH" >身高:</label>
+                    <input id="myH" type="number" min="0" v-model="height">
+                    <label class="cmkg" for="myH">公分</label>
+                    <span class="genderline" style="margin-left:8px; margin-right:8px;"> | </span>
+                    <br class="cross">
+                    <label for="myW" >體重:</label>
+                    <input id="myW" type="number" min="0" v-model="weight" style="margin-top:10px;">
+                    <label class="cmkg" for="myW">公斤</label>
+                </div>
+
+                <!-- <div>
+                    <button id="calc" type="button">計算</button>
+                    <button id="reset" type="reset" @click="clear()">重新填寫</button>
+                </div> -->
+                
+            </div>
+
+            <div id="result" class="output" v-text="bmi()">計算結果</div>
+
+            <!-- 表格 -->
+            <table>
+                <tr>
+                    <th colspan="3">BMI值</th>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td>男性</th>
+                    <td>女性</th>
+                </tr>
+
+                <td :class="{active: isActive('1')}">體重過輕</td>
+                <td :class="{active: isActive('10')}">
+                    &lt;20 </td>
+                <td :class="{active: isActive('11')}">
+                    &lt;19 </td>
+
+                <tr>
+                    <td :class="{active: isActive('2')}">正常範圍</td>
+                    <td :class="{active: isActive('20')}"> 20-25 </td>
+                    <td :class="{active: isActive('21')}"> 19-25 </td>
+
+                </tr>
+
+                <tr>
+                    <td :class="{active: isActive('3')}">體重過重</td>
+                    <td :class="{active: isActive('30')}"> 25-30 </td>
+                    <td :class="{active: isActive('31')}"> 25-30 </td>
+                </tr>
+
+                <tr>
+                    <td :class="{active: isActive('4')}">肥胖</td>
+                    <td :class="{active: isActive('40')}"> 30-40 </td>
+                    <td :class="{active: isActive('41')}"> 30-40 </td>
+                </tr>
+
+                <tr>
+                    <td :class="{active: isActive('5')}">病態肥胖</td>
+                    <td :class="{active: isActive('50')}"> &gt; 40 </td>
+                    <td :class="{active: isActive('51')}"> &gt; 40 </td>
+                </tr>
+                
+            </table>
+
+        </header>
+
+    </div>
+
+    <script src="https://unpkg.com/vue@3"></script>
+
+    <script>
+
+        Vue.createApp({
+            data: function () {
+                return {
+                    height:0,
+                    weight:0,
+                    gender:0,
+                    my_active:0,
+
+                }
+            },
+            methods: {
+                bmi(){
+                    answer = this.weight / ((this.height / 100)**2);
+                    this.my_active = answer ? this.activeResult(answer, this.gender):'0';
+                    return answer ? answer.toFixed(2) :0;
+                },
+
+                isActive(td1_or_td23){
+                    if(td1_or_td23 == 1){
+                        return this.my_active[0] == td1_or_td23
+                    }else{
+                        return this.my_active == td1_or_td23
+                    }
+                },
+
+                activeResult(answer,gender){
+                    if (answer > 40){
+                        return'5'+gender;
+                    }
+                    if (answer > 30){
+                        return'4'+gender;
+                    }
+
+                    if (answer > 25){
+                        return'3'+gender;
+                    }
+                    if (gender == 0 && answer >= 20){
+                        return'2'+gender;
+                    }
+                    if (gender == 1 && answer >= 19){
+                        return'2'+gender;
+                    }
+                    // else{
+                        return '1' + gender;
+                    // }
+
+                }
+
+            },
+            mounted: function () {
+                
+            },
+        }).mount('#app')
+
+
+    </script>
+</body>
+
+</html>
